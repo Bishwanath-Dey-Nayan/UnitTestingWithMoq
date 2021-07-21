@@ -20,14 +20,15 @@ namespace UnitTestWithMoq.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> Get()
+        [Route("GetEmployee")]
+        public ActionResult<IEnumerable<Employee>> GetEmployee()
         {
             var model = repo.GetAll();
             return Ok(model);
         }
 
-        [HttpGet("{id}", Name ="Get")]
-        public  IActionResult Get(long id)
+        [HttpGet("GetEmployeeById/{id}")]
+        public  ActionResult<Employee> GetEmployeeById(long id)
         {
             Employee employee = repo.GetById(id);
             if(employee == null)
@@ -37,15 +38,15 @@ namespace UnitTestWithMoq.Controllers
             return Ok(employee);
         }
 
-        [HttpPost]
-        public IActionResult Post(Employee employee)
+        [HttpPost("CreateEmployee")]
+        public ActionResult<Employee> CreateEmployee(Employee employee)
         {
             if(employee == null)
             {
                 return BadRequest("Employee is null");
             }
             repo.Insert(employee);
-            return CreatedAtRoute("Get", new { Id = employee.EmployeeId}, employee);
+            return CreatedAtRoute("GetEmployeeById", new { Id = employee.EmployeeId}, employee);
         }
 
         [HttpPut]
@@ -57,6 +58,11 @@ namespace UnitTestWithMoq.Controllers
             }
             repo.Update(employee);
             return NoContent();
+        }
+
+        public bool checkIfUserCanBeVoter(int age)
+        {
+            return (age >= 18) ? true : false; 
         }
     }
 }
